@@ -33,6 +33,11 @@ func (n *node) SayHello(ctx context.Context, in *hs.HelloRequest) (*hs.HelloRepl
 	return &hs.HelloReply{Message: "Hello from " + n.Name}, nil
 }
 
+type server struct {
+	// Embed the unimplemented server
+	hs.UnimplementedHelloServiceServer
+}
+
 // Start listening/service.
 func (n *node) StartListening() {
 
@@ -43,7 +48,7 @@ func (n *node) StartListening() {
 
 	_n := grpc.NewServer() // n is for serving purpose
 
-	hs.RegisterHelloServiceServer(_n, n)
+	hs.RegisterHelloServiceServer(_n, server{})
 	// Register reflection service on gRPC server.
 	reflection.Register(_n)
 
